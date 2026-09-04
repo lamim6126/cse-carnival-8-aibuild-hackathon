@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../models/event.dart';
 import '../services/campus_database_service.dart';
 
@@ -56,7 +56,7 @@ class EventDialog {
                   ),
                   const SizedBox(height: 12),
                   DropdownButtonFormField<String>(
-                    value: selectedStatus,
+                    initialValue: selectedStatus,
                     decoration: const InputDecoration(labelText: "Status", border: OutlineInputBorder()),
                     items: ['upcoming', 'ongoing', 'completed', 'cancelled', 'full']
                         .map((s) => DropdownMenuItem(value: s, child: Text(s.toUpperCase())))

@@ -45,7 +45,7 @@ class _SchedulesViewState extends State<SchedulesView> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text("Class Schedules & Timetable", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-                    Text("Total ${db.schedules.length} class periods configured", style: TextStyle(color: Colors.grey.shade600)),
+                    Text("Total ${_db.schedules.length} class periods configured", style: TextStyle(color: Colors.grey.shade600)),
                   ],
                 ),
               ),
@@ -76,7 +76,7 @@ class _SchedulesViewState extends State<SchedulesView> {
               Expanded(
                 flex: 1,
                 child: DropdownButtonFormField<String>(
-                  value: _selectedDay,
+                  initialValue: _selectedDay,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                     contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -93,7 +93,7 @@ class _SchedulesViewState extends State<SchedulesView> {
                 ? const Center(child: Text("No schedule records found matching criteria."))
                 : ListView.separated(
                     itemCount: filtered.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 10),
+                    separatorBuilder: (_, _) => const SizedBox(height: 10),
                     itemBuilder: (ctx, i) {
                       final item = filtered[i];
                       return Card(
@@ -153,7 +153,7 @@ class _SchedulesViewState extends State<SchedulesView> {
                                     ),
                                   );
                                   if (confirm == true) {
-                                    db.deleteSchedule(item.id);
+                                    _db.deleteSchedule(item.id);
                                   }
                                 },
                               ),
@@ -166,6 +166,8 @@ class _SchedulesViewState extends State<SchedulesView> {
           ),
         ],
       ),
+    );
+      },
     );
   }
 }

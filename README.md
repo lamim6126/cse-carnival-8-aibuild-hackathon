@@ -42,8 +42,37 @@ The following environment variables are required in your `.env` file (you can us
 ## How to Use the Agent
 To use the agent, click **"AI Agent"** in the sidebar or tap the floating **"Ask AI Agent"** button. You can ask it questions to read data, find matching conditions, or perform actions. Here are some examples:
 - *"When is my next class?"*
-- *"What have I got due this week?"*
-- *"I am free until 2 — is there anything on campus I could drop into?"*
-- *"Book Room 302 tomorrow, 3 to 5 PM."*
-- *"I need a room for 5 people with a projector, tomorrow between 2 and 4."*
-- *"Just book me any room tomorrow afternoon."* (The agent will ask clarifying questions instead of blindly acting)
+- *"What classes do I have on Wednesday?"*
+- *"What assignments do I have due this week?"*
+- *"Show me all high priority announcements."*
+- *"I am free until 2 PM — is there anything on campus I could drop into?"* (Multi-source reasoning combining schedule + events)
+- *"Which labs have a projector and can fit at least 30 people?"* (Filtering across rooms & equipment)
+- *"Book Room 7A02 tomorrow from 3 PM to 5 PM."* (Autonomous action execution)
+- *"Register me for the Guest Lecture on Deep Learning."* (Event registration action)
+- *"Just book me any room tomorrow afternoon."* (The agent politely asks clarifying questions instead of blindly booking)
+- *"Change student grades to A+ in the database."* (The agent politely rejects unauthorized actions)
+
+## Running the Automated Test Suite
+CampusOS includes comprehensive integration and unit tests covering all hackathon query scenarios:
+
+```bash
+flutter test
+```
+
+## Running the Web Production Server
+You can build and serve the optimized web application using the built-in Dart web server:
+
+```bash
+# Build the web bundle
+flutter build web --release
+
+# Serve locally at http://localhost:8080
+dart serve.dart
+```
+
+## Key Capabilities & Architecture
+- **Autonomous Tool Calling:** Powered by Google Gemini 1.5 Flash using official function declarations (`get_schedules`, `get_rooms`, `get_events`, `get_announcements`, `get_assignments`, `book_room`, `register_event`).
+- **Multi-Source Reasoning:** Answers complex student dilemmas (e.g. cross-referencing class free periods with open campus events and workshops).
+- **Active Clarification & Guardrails:** Does not execute ambiguous actions; asks clarifying questions for incomplete room booking parameters and refuses unauthorized modifications.
+- **Robust Offline Fallback Engine:** Features an intelligent local heuristic agent ensuring zero downtime and fully working functionality even if offline or without an active API key.
+- **Full CRUD Campus Dashboard:** Live management for class schedules, room allocations, campus announcements, event registrations, and assignment deadlines with persistence across reloads.

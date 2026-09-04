@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../models/schedule.dart';
 import '../services/campus_database_service.dart';
 
@@ -31,7 +31,7 @@ class ScheduleDialog {
                   TextField(controller: titleCtrl, decoration: const InputDecoration(labelText: "Course Title", border: OutlineInputBorder())),
                   const SizedBox(height: 12),
                   DropdownButtonFormField<String>(
-                    value: selectedDay,
+                    initialValue: selectedDay,
                     decoration: const InputDecoration(labelText: "Day of Week", border: OutlineInputBorder()),
                     items: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday']
                         .map((d) => DropdownMenuItem(value: d, child: Text(d)))

@@ -3,12 +3,12 @@ import 'dart:io';
 void main() async {
   final webDir = Directory('build/web');
   if (!webDir.existsSync()) {
-    print('build/web not found!');
+    stdout.writeln('build/web not found!');
     return;
   }
 
   final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8080);
-  print('CampusOS Web Running at http://localhost:8080');
+  stdout.writeln('CampusOS Web Running at http://localhost:8080');
 
   // Open in browser
   Process.run('cmd', ['/c', 'start', 'http://localhost:8080']);

@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../models/announcement.dart';
 import '../services/campus_database_service.dart';
 
@@ -29,7 +29,7 @@ class AnnouncementDialog {
                   TextField(controller: bodyCtrl, maxLines: 3, decoration: const InputDecoration(labelText: "Notice Body", border: OutlineInputBorder())),
                   const SizedBox(height: 12),
                   DropdownButtonFormField<String>(
-                    value: selectedPriority,
+                    initialValue: selectedPriority,
                     decoration: const InputDecoration(labelText: "Priority Level", border: OutlineInputBorder()),
                     items: ['high', 'medium', 'low']
                         .map((p) => DropdownMenuItem(value: p, child: Text(p.toUpperCase())))

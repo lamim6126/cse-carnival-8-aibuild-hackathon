@@ -1,4 +1,4 @@
-﻿class AssignmentItem {
+class AssignmentItem {
   String id;
   String course;
   String courseTitle;
@@ -6,7 +6,9 @@
   String description;
   String assignedDate;
   String deadline;
+  String submissionPlatform;
   String status; // "pending" | "submitted" | "graded" | "late"
+  int marks;
 
   AssignmentItem({
     required this.id,
@@ -16,7 +18,9 @@
     required this.description,
     required this.assignedDate,
     required this.deadline,
+    this.submissionPlatform = '',
     required this.status,
+    this.marks = 0,
   });
 
   factory AssignmentItem.fromJson(Map<String, dynamic> json) => AssignmentItem(
@@ -27,7 +31,11 @@
     description: json['description']?.toString() ?? '',
     assignedDate: json['assigned_date']?.toString() ?? '',
     deadline: json['deadline']?.toString() ?? '',
+    submissionPlatform: json['submission_platform']?.toString() ?? '',
     status: json['status']?.toString() ?? 'pending',
+    marks: (json['marks'] is num)
+        ? (json['marks'] as num).toInt()
+        : int.tryParse(json['marks']?.toString() ?? '0') ?? 0,
   );
 
   Map<String, dynamic> toJson() => {
@@ -38,7 +46,9 @@
     'description': description,
     'assigned_date': assignedDate,
     'deadline': deadline,
+    'submission_platform': submissionPlatform,
     'status': status,
+    'marks': marks,
   };
 
   AssignmentItem copyWith({
@@ -49,7 +59,9 @@
     String? description,
     String? assignedDate,
     String? deadline,
+    String? submissionPlatform,
     String? status,
+    int? marks,
   }) {
     return AssignmentItem(
       id: id ?? this.id,
@@ -59,7 +71,9 @@
       description: description ?? this.description,
       assignedDate: assignedDate ?? this.assignedDate,
       deadline: deadline ?? this.deadline,
+      submissionPlatform: submissionPlatform ?? this.submissionPlatform,
       status: status ?? this.status,
+      marks: marks ?? this.marks,
     );
   }
 }

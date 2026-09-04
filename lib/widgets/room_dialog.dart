@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import '../models/room.dart';
 import '../services/campus_database_service.dart';
 
@@ -27,7 +27,7 @@ class RoomDialog {
                   TextField(controller: numCtrl, decoration: const InputDecoration(labelText: "Room Number (e.g. 7A05)", border: OutlineInputBorder())),
                   const SizedBox(height: 12),
                   DropdownButtonFormField<String>(
-                    value: selectedType,
+                    initialValue: selectedType,
                     decoration: const InputDecoration(labelText: "Room Type", border: OutlineInputBorder()),
                     items: ['classroom', 'lab', 'seminar']
                         .map((t) => DropdownMenuItem(value: t, child: Text(t.toUpperCase())))
@@ -46,7 +46,7 @@ class RoomDialog {
                   TextField(controller: equipCtrl, decoration: const InputDecoration(labelText: "Equipment (comma separated)", border: OutlineInputBorder())),
                   const SizedBox(height: 12),
                   DropdownButtonFormField<String>(
-                    value: selectedStatus,
+                    initialValue: selectedStatus,
                     decoration: const InputDecoration(labelText: "Status", border: OutlineInputBorder()),
                     items: ['available', 'unavailable']
                         .map((s) => DropdownMenuItem(value: s, child: Text(s.toUpperCase())))
@@ -100,9 +100,13 @@ class RoomDialog {
   }
 
   static void showBook(BuildContext context, RoomItem room) {
+    final tomorrow = DateTime.now().add(const Duration(days: 1));
+    final tomorrowStr =
+        '${tomorrow.year}-${tomorrow.month.toString().padLeft(2, '0')}-${tomorrow.day.toString().padLeft(2, '0')}';
+
     final byCtrl = TextEditingController(text: 'Student');
     final purposeCtrl = TextEditingController(text: 'Project Discussion');
-    final dateCtrl = TextEditingController(text: '2026-09-05');
+    final dateCtrl = TextEditingController(text: tomorrowStr);
     final startCtrl = TextEditingController(text: '15:00');
     final endCtrl = TextEditingController(text: '17:00');
 

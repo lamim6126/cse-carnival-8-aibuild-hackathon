@@ -178,13 +178,32 @@ class GeminiAgentService extends ChangeNotifier {
               },
             ),
           ),
+          FunctionDeclaration(
+            'cancel_event_registration',
+            'Cancel a student\'s registration for a campus event.',
+            Schema(
+              SchemaType.object,
+              properties: {
+                'event_name_or_id': Schema(SchemaType.string, description: 'Name or ID of the event to cancel registration from'),
+                'student_id': Schema(SchemaType.string, description: 'Student ID to cancel registration for e.g. 20-40532'),
+              },
+              requiredProperties: ['event_name_or_id', 'student_id'],
+            ),
+          ),
         ],
       ),
     ];
 
+    final now = DateTime.now();
+    final weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    final todayName = weekdays[now.weekday - 1];
+    final todayDate = '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+    final currentHour = now.hour.toString().padLeft(2, '0');
+    final currentMin = now.minute.toString().padLeft(2, '0');
+
     final systemInstruction = Content.system('''
 You are CampusOS, an intelligent and helpful university AI agent for students.
-Today's date is Friday, September 4, 2026. Current time is approximately 16:00 (4:00 PM).
+Today is $todayName, $todayDate. Current time is $currentHour:$currentMin (24h).
 The university academic week runs from Sunday to Thursday.
 
 CORE PRINCIPLES:
@@ -353,7 +372,7 @@ CORE PRINCIPLES:
       final evList = await _executeTool('get_events', {}) as List;
       final buffer = StringBuffer("Based on your schedule and campus timetable, you have free hours! Here are active campus events you can attend:\n\n");
       for (final e in evList.take(2)) {
-        buffer.writeln("• **${e['name']}** on **${e['date']}** at **${e['time']}** at **${e['venue']}**.");
+        buffer.writeln("• **${e['name']}** on **${e['date']}** at **${e['start_time']}** at **${e['venue']}**.");
       }
       buffer.write("\nFeel free to drop in and participate!");
       return buffer.toString();
@@ -385,15 +404,17 @@ CORE PRINCIPLES:
 
     // 7. BOOK ROOM (Action with ambiguity check - Principle #3)
     if (lower.contains('book')) {
-      if (lower.contains('any room') || (!lower.contains('7a') && !lower.contains('room ') && !RegExp(r'\d{3,4}').hasMatch(lower))) {
+      if (lower.contains('any room') || (!lower.contains('7a') && !lower.contains('7b') && !lower.contains('7c') && !lower.contains('room ') && !RegExp(r'\d{3,4}').hasMatch(lower))) {
         return "To book a room for you, I need a few more specifics: which room number, date, and exact start & end times would you like?";
       }
 
       final roomMatch = RegExp(r'(room\s+)?([0-9][a-z0-9]+)', caseSensitive: false).firstMatch(userText);
       final roomNo = roomMatch != null ? roomMatch.group(2)!.toUpperCase() : '7A02';
+      final tomorrow = DateTime.now().add(const Duration(days: 1));
+      final tomorrowStr = '${tomorrow.year}-${tomorrow.month.toString().padLeft(2, '0')}-${tomorrow.day.toString().padLeft(2, '0')}';
       final args = {
         'room_number': roomNo,
-        'date': '2026-09-05',
+        'date': tomorrowStr,
         'start_time': '15:00',
         'end_time': '17:00',
         'purpose': 'Student Group Study',
@@ -404,7 +425,11 @@ CORE PRINCIPLES:
       return res['message']?.toString() ?? "Room booking request processed.";
     }
 
-    // 8. REGISTER EVENT
+    // 8. REGISTER / CANCEL EVENT REGISTRATION
+    if (lower.contains('cancel') && (lower.contains('register') || lower.contains('registration') || lower.contains('event'))) {
+      return "To cancel your event registration, I need the event name and your student ID. Please provide both.";
+    }
+
     if (lower.contains('register')) {
       final args = {
         'event_name_or_id': 'Deep Learning',
@@ -529,6 +554,12 @@ CORE PRINCIPLES:
           if (status != null && a.status.toLowerCase() != status) return false;
           return true;
         }).map((a) => a.toJson()).toList();
+
+      case 'cancel_event_registration':
+        final evName = args['event_name_or_id']?.toString() ?? '';
+        final stId = args['student_id']?.toString() ?? '';
+        final ok = _db.cancelEventRegistration(evName, stId);
+        return {'success': ok, 'message': ok ? 'Registration for "$evName" cancelled for student $stId.' : 'No registration found for student $stId in event "$evName".'};
 
       default:
         return {'error': 'Unknown tool name: $name'};
