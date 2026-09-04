@@ -287,8 +287,7 @@ CORE PRINCIPLES:
     }
 
     // 2. SCHEDULES & NEXT CLASS
-    if (lower.contains('next class') || lower.contains('class kokhon') || lower.contains('amar class') || lower.contains('when is my next') ||
-        lower.contains('schedule') || lower.contains('classes on') || lower.contains('timetable') || lower.contains('routine')) {
+    if (lower.contains('class') || lower.contains('schedule') || lower.contains('timetable') || lower.contains('routine')) {
       String? dayFilter;
       for (final d in ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']) {
         if (lower.contains(d)) {
@@ -408,9 +407,9 @@ CORE PRINCIPLES:
     // 8. REGISTER EVENT
     if (lower.contains('register')) {
       final args = {
-        'event_name_or_id': 'Guest Lecture on Deep Learning',
-        'student_id': '20-40532',
-        'student_name': 'Student',
+        'event_name_or_id': 'Deep Learning',
+        'student_id': '20-40999',
+        'student_name': 'Registered Student',
       };
       toolCallsList.add("register_event(${jsonEncode(args)})");
       notifyListeners();

@@ -1,4 +1,4 @@
-﻿import 'dart:io';
+import 'dart:io';
 
 void main() async {
   final webDir = Directory('build/web');
@@ -32,11 +32,15 @@ void main() async {
         _ => ContentType.binary,
       };
       request.response.headers.contentType = mime;
+      request.response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+      request.response.headers.set('Pragma', 'no-cache');
+      request.response.headers.set('Expires', '0');
       await request.response.addStream(file.openRead());
     } else {
       // Fallback to index.html for SPA routing
       final indexFile = File('build/web/index.html');
       request.response.headers.contentType = ContentType.html;
+      request.response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate');
       await request.response.addStream(indexFile.openRead());
     }
     await request.response.close();
