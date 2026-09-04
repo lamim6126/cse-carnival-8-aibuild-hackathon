@@ -12,25 +12,28 @@ class SchedulesView extends StatefulWidget {
 class _SchedulesViewState extends State<SchedulesView> {
   String _selectedDay = 'All';
   String _searchQuery = '';
+  final _db = CampusDatabaseService();
 
   @override
   Widget build(BuildContext context) {
-    final db = CampusDatabaseService();
-    final days = ['All', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'];
+    return AnimatedBuilder(
+      animation: _db,
+      builder: (context, _) {
+        final days = ['All', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'];
 
-    final filtered = db.schedules.where((s) {
-      if (_selectedDay != 'All' && s.day != _selectedDay) return false;
-      if (_searchQuery.isNotEmpty) {
-        final q = _searchQuery.toLowerCase();
-        return s.course.toLowerCase().contains(q) ||
-            s.title.toLowerCase().contains(q) ||
-            s.room.toLowerCase().contains(q) ||
-            s.instructor.toLowerCase().contains(q);
-      }
-      return true;
-    }).toList();
+        final filtered = _db.schedules.where((s) {
+          if (_selectedDay != 'All' && s.day != _selectedDay) return false;
+          if (_searchQuery.isNotEmpty) {
+            final q = _searchQuery.toLowerCase();
+            return s.course.toLowerCase().contains(q) ||
+                s.title.toLowerCase().contains(q) ||
+                s.room.toLowerCase().contains(q) ||
+                s.instructor.toLowerCase().contains(q);
+          }
+          return true;
+        }).toList();
 
-    return Padding(
+        return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
