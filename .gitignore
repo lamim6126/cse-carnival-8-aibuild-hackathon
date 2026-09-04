@@ -6,8 +6,11 @@ __pycache__/
 venv/
 env/
 
-# Environment
+# Environment & Secrets
 .env
+.env.*
+!.env.example
+*.env
 *.env.local
 
 # Build outputs
@@ -25,6 +28,10 @@ out/
 .DS_Store
 Thumbs.db
 
-# Logs
-*.log
-npm-debug.log*
+# Flutter / Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+*.iml
+.metadata

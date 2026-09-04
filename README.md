@@ -1,102 +1,131 @@
-# CampusOS — AI Build Hackathon
+﻿# CampusOS — Intelligent University Platform & Autonomous AI Agent
 
-An intelligent university platform powered by an AI agent that understands and acts on real-time campus data.
-
----
-
-## The Challenge
-
-Students struggle daily with scattered campus information — class changes buried in group chats, deadlines forgotten until the last minute, no easy way to know what's happening on campus right now.
-
-Your job: build **CampusOS** — a two-part app with a data dashboard and an AI agent that always reads live data.
-
-Read the full problem statement → [`PROBLEM_STATEMENT.md`](./PROBLEM_STATEMENT.md)
+> **AUST CSE Carnival 8.0 — AI Build Hackathon Submission**
 
 ---
 
-## Repository Structure
+## 📌 Project Overview
 
-```
-campusos-hackathon/
-│
-├── README.md                    ← You are here
-├── PROBLEM_STATEMENT.md         ← Full problem statement + scoring
-├── SUBMISSION.md                ← How and where to submit
-│
-├── data/                        ← Seed data (load these into your backend)
-│   ├── schedules.json
-│   ├── rooms.json
-│   ├── events.json
-│   ├── announcements.json
-│   └── assignments.json
-│
-├── schema/
-│   └── schema.md                ← Field names, types, and constraints for all 5 systems
-│
-└── sample_queries/
-    └── sample_queries.md        ← Queries we will use when judging your agent
-```
+**CampusOS** is an intelligent, full-stack university operating system built to eliminate fragmented campus data and empower students with an autonomous AI agent. The platform provides a responsive **Campus Data Manager** dashboard covering all five university operational systems: **Class Schedules**, **Rooms & Labs**, **Events**, **Announcements**, and **Assignments**. Every system supports real-time **Create, Read, Update, and Delete (CRUD)** operations with persistent storage that survives reloads and restarts. 
+
+Sitting directly on top of this live data is the **CampusOS AI Agent**, powered by Google Gemini using **genuine Function Calling / Tool Calling**. The agent dynamically executes tools against the live backend to look up schedules, perform multi-source reasoning (e.g. matching free hours to events), autonomously take actions (such as booking rooms with conflict detection and registering for events), ask clarifying questions when user requests are ambiguous, and safely refuse unauthorized operations.
 
 ---
 
-## How to Participate
+## 🛠️ Tech Stack
 
-### 1. Fork the repository
+- **Platform & Framework:** Flutter (Dart 3.x) — Universal Web and Desktop support
+- **AI / LLM Engine:** Google Gemini (via official `google_generative_ai` SDK) with **real-time Tool Calling / Function Calling**
+- **Persistence & Backend Service:** `CampusDatabaseService` with persistent storage (`shared_preferences` / local storage) — loads seed data on initial startup and persists all mutations permanently
+- **Architecture:** Reactive Model-View-Service architecture with `ChangeNotifier` ensuring zero-delay live synchronization between data mutations and AI queries
+- **Design & UI/UX:** Modern Material 3 UI with adaptive NavigationRail for wide screens and bottom navigation for compact screens
 
-Click **Fork** in the top-right corner of this repo's GitHub page. This creates your own copy under your GitHub account, where you'll build your solution.
+---
 
-### 2. Clone your fork
+## 🚀 Setup Instructions (Run Locally)
 
+The project can be executed simply by following these steps:
+
+### Prerequisites
+- [Flutter SDK](https://flutter.dev/docs/get-started/install) (v3.13.0 or higher)
+- Google Chrome browser (for Web) or Windows Desktop build tools
+- A Google Gemini API Key (free from [Google AI Studio](https://aistudio.google.com/))
+
+### 1. Clone the repository
 ```bash
-git clone https://github.com/YOUR_USERNAME/campusos-hackathon.git
-cd campusos-hackathon
+git clone https://github.com/lamim6126/cse-carnival-8-aibuild-hackathon.git
+cd cse-carnival-8-aibuild-hackathon
 ```
 
-### 3. Build your solution inside your fork
+### 2. Configure Environment Variables
+Copy `.env.example` to `.env`:
+```bash
+cp .env.example .env
+```
+Open `.env` and set your Gemini API key:
+```env
+GOOGLE_API_KEY=your_gemini_api_key_here
+```
+> 💡 *Note: You can also configure or update the API Key directly inside the app UI by clicking the Settings gear icon in the top right corner.*
 
-> Your solution lives in your fork — do not open a pull request to this repo.
+### 3. Install Dependencies
+```bash
+flutter pub get
+```
 
-### 4. Making your fork private
+### 4. Run the App
+To run directly in Google Chrome:
+```bash
+flutter run -d chrome
+```
 
-By default, a fork is public. If you want to keep your work hidden from other participants while you build:
-
-1. Go to your fork on GitHub
-2. Open **Settings** (top of the repo page)
-3. Scroll to the **Danger Zone** at the bottom
-4. Click **Change repository visibility** → **Make private**
-5. Confirm by typing the repository name
-
-> **You may keep your fork private during the hackathon period, but it must be switched back to public by 8:30 PM on the submission deadline.** Repositories still private after that time will not be judged. To make it public again, repeat the steps above and choose **Make public** instead.
-
-### 5. Submit
-
-Submit your fork's public URL via the instructions in [`SUBMISSION.md`](./SUBMISSION.md).
-
----
-
-## Quick Links
-
-| Resource | Link |
-|----------|------|
-| Full problem statement | [`PROBLEM_STATEMENT.md`](./PROBLEM_STATEMENT.md) |
-| Data schema | [`schema/schema.md`](./schema/schema.md) |
-| Sample agent queries | [`sample_queries/sample_queries.md`](./sample_queries/sample_queries.md) |
-| Submission guide | [`SUBMISSION.md`](./SUBMISSION.md) |
+*(Optional) To run as native Windows desktop app:*
+```bash
+flutter run -d windows
+```
 
 ---
 
-## Seed Data Overview
+## 🔑 Environment Variables
 
-| File | Records | What It Contains |
-|------|---------|-----------------|
-| `schedules.json` | 24 | Class timetable — course, day, time, room, instructor |
-| `rooms.json` | 20 | Rooms 7A01–7A07, 7B01–7B08, 7C01–7C05 with equipment and bookings |
-| `events.json` | 7 | Campus events with registration lists |
-| `announcements.json` | 8 | Notices with priority levels and expiry dates |
-| `assignments.json` | 8 | Course assignments with deadlines and submission status |
+| Variable | Required | Description |
+|---|---|---|
+| `GOOGLE_API_KEY` | Yes | Your Google Gemini API Key for the AI Agent |
+| `GEMINI_API_KEY` | Optional | Alternative environment variable alias for the API Key |
 
-> **Important:** These JSON files are only the starting/seed data — not the database itself. Load them into a real backend (a database, or at minimum a backend service with persistent storage) on app startup. Your dashboard and AI agent must both read from and write to that backend, not the static JSON files directly. If you add, edit, or delete a record, the change must be saved in your backend and still be there after a reload — the JSON files in this repo will not update. The agent is also expected to always query the current backend state, not a cached or hardcoded copy of the seed data.
+*No API keys are committed to this repository in compliance with hackathon regulations.*
 
 ---
 
-Good luck. Build something that actually works.
+## 📊 Core Features & The 5 Systems
+
+| System | Fields Managed | Available Operations |
+|---|---|---|
+| **1. Schedules** | Course, title, day, start/end time, room, instructor, section | View, Add, Edit, Delete, Filter by day/search |
+| **2. Rooms & Labs** | Room number, type, capacity, equipment, floor, status, bookings | View, Add, Edit, Delete, **Book Room** (with real-time conflict checking), **Cancel Booking** |
+| **3. Events** | Name, description, date, time, venue, organizer, capacity, registered count | View, Add, Edit, Delete, **Register Student** (with capacity limit checking), **Cancel Registration** |
+| **4. Announcements** | Title, body, priority (high/medium/low), posted by, date, expires | View, Add, Edit, Delete, Priority-based filtering |
+| **5. Assignments** | Course, title, description, assigned date, deadline, status | View, Add, Edit, Delete, Status filtering |
+
+All mutations persist immediately to the backend database service and trigger reactive updates across both the UI and AI Agent context without requiring manual page refresh.
+
+---
+
+## 🤖 How to Use the AI Agent
+
+Click **"AI Agent"** in the sidebar or tap the floating **"Ask AI Agent"** button from any screen. 
+
+The agent uses **real function calling** to fetch and modify data on the fly. Quick action chips for all official hackathon test queries are provided at the top of the chat:
+
+### Sample Queries Supported:
+- **Simple Lookups:**
+  - *"When is my next class?"*
+  - *"What classes do I have on Wednesday?"*
+  - *"What assignments do I have due this week?"*
+  - *"Show me all high priority announcements."*
+- **Multi-Source Reasoning:**
+  - *"I'm free until 2 PM — is there anything on campus I could drop into?"* (cross-references student schedule with campus events)
+  - *"Which labs have a projector and can fit at least 30 people?"* (filters room type `lab`, equipment `projector`, capacity >= 30)
+- **Autonomous Actions:**
+  - *"Book Room 7A02 tomorrow from 3 PM to 5 PM."* (checks availability and records booking)
+  - *"Register me for the Guest Lecture on Deep Learning."* (validates seat capacity and registers student)
+  - *"I need a room for 5 people with a projector, tomorrow between 2 and 4."*
+- **Handling Ambiguity & Safety:**
+  - *"Just book me any room tomorrow afternoon."* → Agent intelligently refuses to blindly book, instead asking clarifying questions regarding time, capacity, and room requirements.
+  - Rejecting unauthorized actions (e.g. requests to delete university records or modify student grades).
+
+---
+
+## 🧪 Testing & Verification
+
+Automated tests are included to ensure app stability:
+```bash
+flutter test
+```
+
+---
+
+## 👥 Team Details
+
+- **Event:** AUST CSE Carnival 8.0 — AI Build Hackathon (Preliminary Round)
+- **Team Repository:** [lamim6126/cse-carnival-8-aibuild-hackathon](https://github.com/lamim6126/cse-carnival-8-aibuild-hackathon)
